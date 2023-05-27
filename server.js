@@ -24,8 +24,8 @@ db.once("open", () => console.error("Connected to Mongoose"));
 // code that connects nodejs to mongoDB using mongoose
 
 // ROUTES
-const booksRouter = require("./routes/booksRoute");
-app.use("/api", booksRouter);
+app.use("/api/books", require("./routes/booksRoute"));
+app.use("/api/users", require("./routes/usersRoute"));
 // ROUTES
 
 app.use(errorHandler);
