@@ -74,8 +74,12 @@ const generateToken = (id) => {
 };
 
 const getMe = asyncHandler(async (req, res) => {
-  res.json({
-    message: "Get User",
+  const { id, name, email } = await User.findById(req.user.id);
+
+  res.status(200).json({
+    id,
+    name,
+    email,
   });
 });
 
