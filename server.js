@@ -5,6 +5,7 @@ if (process.env.NODE_ENV !== "production") {
 // EXPRESS IMPLEMENTATION
 const express = require("express");
 const app = express();
+const { errorHandler } = require("./middleware/errorMiddleware");
 
 app.use(express.json());
 app.use(express.urlencoded({ limit: "10mb", extended: false }));
@@ -23,8 +24,10 @@ db.once("open", () => console.error("Connected to Mongoose"));
 // code that connects nodejs to mongoDB using mongoose
 
 // ROUTES
-const booksRouter = require("./routes/books");
+const booksRouter = require("./routes/booksRoute");
 app.use("/api", booksRouter);
 // ROUTES
+
+app.use(errorHandler);
 
 app.listen(process.env.PORT || 3001);
