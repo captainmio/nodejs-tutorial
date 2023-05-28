@@ -1,10 +1,16 @@
+
+import {useState, useEffect} from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { registerUser, reset } from '../store/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'
+
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { FaUserAlt } from "react-icons/fa";
 
-import {useState} from "react"
 
 function Register() {
 
@@ -14,9 +20,28 @@ function Register() {
     password: '',
     confirmPassword: '',
   });
-  
+
+  const { loading, error, success } = useSelector(
+    (state) => state.auth
+  )
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const {name, email, password, confirmPassword} = formData
+
+  useEffect(() => {
+    // redirect user to login page if registration was successful
+    if (success) {
+      toast.success("Account successfully registered")
+      navigate('/login')
+    }
+
+    if(error) {
+      toast.error(error)
+    }
+
+    dispatch(reset())
+  }, [dispatch, error, navigate, success])
 
   const handleInputChange = (e) => {
     setFormData((prevState) => ({
@@ -27,6 +52,7 @@ function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    dispatch(registerUser(formData))
     console.log('Form Submitting')
   }
 
@@ -91,6 +117,7 @@ function Register() {
               variant="primary"
               type="submit"
               size="lg"
+              disabled={loading}
             >
               Register
             </Button>

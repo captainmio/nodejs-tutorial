@@ -9,7 +9,8 @@ const { errorHandler } = require("./middleware/errorMiddleware");
 
 app.use(express.json());
 app.use(express.urlencoded({ limit: "10mb", extended: false }));
-
+const cors = require("cors");
+app.use(cors());
 // EXPRESS IMPLEMENTATION
 
 // code that connects nodejs to mongoDB using mongoose
