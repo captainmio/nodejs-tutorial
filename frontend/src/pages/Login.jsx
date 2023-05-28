@@ -35,7 +35,7 @@ function Login() {
     }
 
     dispatch(reset())
-  }, [dispatch, error, navigate, userInfo, success])
+  }, [ error, userInfo, success, navigate, dispatch])
 
   const handleInputChange = (e) => {
     setFormData((prevState) => ({

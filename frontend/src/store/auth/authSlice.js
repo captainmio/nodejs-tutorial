@@ -8,7 +8,7 @@ const localStorageUserToken = localStorage.getItem("userToken")
 
 const userInfo = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
-  : {};
+  : null;
 
 const initialState = {
   loading: false,
@@ -80,6 +80,11 @@ export const userLogin = createAsyncThunk(
   }
 );
 
+export const userLogout = createAsyncThunk("auth/logout", async () => {
+  localStorage.removeItem("userToken");
+  localStorage.removeItem("userInfo");
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -114,6 +119,19 @@ const authSlice = createSlice({
       state.userToken = payload.userToken;
     },
     [userLogin.rejected]: (state, { payload }) => {
+      state.loading = false;
+      state.error = payload;
+    },
+    [userLogout.pending]: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    [userLogout.fulfilled]: (state) => {
+      state.loading = false;
+      state.userInfo = null;
+      state.userToken = null;
+    },
+    [userLogout.rejected]: (state, { payload }) => {
       state.loading = false;
       state.error = payload;
     },

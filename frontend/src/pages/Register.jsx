@@ -57,7 +57,6 @@ function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(registerUser(formData))
-    console.log('Form Submitting')
   }
 
   return (
