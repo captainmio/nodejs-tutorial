@@ -127,7 +127,6 @@ const authSlice = createSlice({
       state.error = null;
     },
     [userLogout.fulfilled]: (state) => {
-      state.loading = false;
       state.userInfo = null;
       state.userToken = null;
     },

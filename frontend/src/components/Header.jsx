@@ -2,9 +2,11 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import {useEffect} from "react"
+import { Link } from 'react-router-dom';
 import { userLogout, reset } from "../store/auth/authSlice";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux'
+
 
 
 import { FaUserAlt, FaSignInAlt } from "react-icons/fa";
@@ -16,17 +18,11 @@ function Header() {
   const navigate = useNavigate()
   const { userInfo } = useSelector((state) => state.auth);
 
-  const handleLogout = () => {
-    dispatch(userLogout());
+  const handleLogout = async () => {
+    await dispatch(userLogout());
+    await dispatch(reset());
+    navigate("/");
   }
-
-  useEffect(() => {
-    if(!userInfo) {
-      navigate("/");
-    }
-
-    dispatch(reset())
-  }, [dispatch, navigate, userInfo]);
   
 
   const checkUserInfo =() => {
@@ -40,9 +36,10 @@ function Header() {
     } else {
       return (
         <Nav className='ms-auto'>
-            <Nav.Link href="/">
-              <FaSignInAlt />&nbsp; Login</Nav.Link>
-            <Nav.Link href="/register" className="">
+            <Nav.Link as={Link} to="/">
+              <FaSignInAlt />&nbsp; Login
+            </Nav.Link>
+            <Nav.Link as={Link} to="/register" className="">
               <FaUserAlt />&nbsp; Register
             </Nav.Link>
         </Nav>

@@ -1,4 +1,3 @@
-
 import {useState, useEffect} from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser, reset } from '../store/auth/authSlice';
@@ -34,6 +33,7 @@ function Register() {
     if (success) {
       toast.success("Account successfully registered")
       navigate('/')
+      console.log('good chit')
     }
 
     if (userInfo || success) {
@@ -132,3 +132,4 @@ function Register() {
 }
 
 export default Register;
+
