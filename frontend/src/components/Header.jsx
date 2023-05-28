@@ -16,7 +16,7 @@ function Header() {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse>
           <Nav className='ms-auto'>
-            <Nav.Link href="/login">
+            <Nav.Link href="/">
               <FaSignInAlt />&nbsp; Login</Nav.Link>
             <Nav.Link href="/register" className="">
               <FaUserAlt />&nbsp; Register

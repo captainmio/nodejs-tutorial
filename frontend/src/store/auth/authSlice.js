@@ -2,10 +2,18 @@ import axios from "axios";
 import { createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+const localStorageUserToken = localStorage.getItem("userToken")
+  ? localStorage.getItem("userToken")
+  : null;
+
+const userInfo = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
+  : {};
+
 const initialState = {
   loading: false,
-  userInfo: {},
-  userToken: null,
+  userInfo: userInfo,
+  userToken: localStorageUserToken,
   error: null,
   success: false,
 };
@@ -42,6 +50,36 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+export const userLogin = createAsyncThunk(
+  "auth/login",
+  async ({ email, password }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(
+        `${backendURL}/users/login`,
+        { email, password },
+        config
+      );
+      // store user's token in local storage
+      localStorage.setItem("userToken", data.token);
+      localStorage.setItem(
+        "userInfo",
+        JSON.stringify({
+          name: data.name,
+          email: data.email,
+          id: data.id,
+        })
+      );
+      return data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -59,9 +97,23 @@ const authSlice = createSlice({
     },
     [registerUser.fulfilled]: (state) => {
       state.loading = false;
-      state.success = true; // registration successful
+      state.success = true;
     },
     [registerUser.rejected]: (state, { payload }) => {
+      state.loading = false;
+      state.error = payload;
+    },
+    [userLogin.pending]: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    [userLogin.fulfilled]: (state, { payload }) => {
+      state.loading = false;
+      state.success = true;
+      state.userInfo = payload;
+      state.userToken = payload.userToken;
+    },
+    [userLogin.rejected]: (state, { payload }) => {
       state.loading = false;
       state.error = payload;
     },

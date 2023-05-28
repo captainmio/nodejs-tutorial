@@ -1,10 +1,15 @@
+import { useDispatch, useSelector } from 'react-redux'
+import {useState, useEffect} from "react"
+import {userLogin, reset} from '../store/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'
+
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { FaUserAlt } from "react-icons/fa";
 
-import {useState} from "react"
 
 function Login() {
 
@@ -12,9 +17,25 @@ function Login() {
     email: '',
     password: '',
   });
-  
+
+  const { success, userInfo, loading, error } = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const {email, password} = formData
+
+  useEffect(() => {
+    // redirect user to login page if registration was successful
+    if (userInfo || success) {
+      navigate('/dashboard')
+    }
+
+    if(error) {
+      toast.error(error)
+    }
+
+    dispatch(reset())
+  }, [dispatch, error, navigate, userInfo, success])
 
   const handleInputChange = (e) => {
     setFormData((prevState) => ({
@@ -25,7 +46,7 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form Submitting')
+    dispatch(userLogin(formData));
   }
 
   return (
@@ -66,6 +87,7 @@ function Login() {
               variant="primary"
               type="submit"
               size="lg"
+              disabled={loading}
             >
               Login
             </Button>

@@ -21,7 +21,7 @@ function Register() {
     confirmPassword: '',
   });
 
-  const { loading, error, success } = useSelector(
+  const { userInfo, loading, error, success } = useSelector(
     (state) => state.auth
   )
   const dispatch = useDispatch()
@@ -33,7 +33,11 @@ function Register() {
     // redirect user to login page if registration was successful
     if (success) {
       toast.success("Account successfully registered")
-      navigate('/login')
+      navigate('/')
+    }
+
+    if (userInfo || success) {
+      navigate('/dashboard')
     }
 
     if(error) {
@@ -41,7 +45,7 @@ function Register() {
     }
 
     dispatch(reset())
-  }, [dispatch, error, navigate, success])
+  }, [dispatch, userInfo, error, navigate, success])
 
   const handleInputChange = (e) => {
     setFormData((prevState) => ({
